@@ -1,0 +1,17 @@
+{
+  "name": "payment-gateway-sdk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A simple payment gateway SDK POC",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run start:dev --workspace=api"
+  },
+  "dependencies": {
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1"
+  }
+}

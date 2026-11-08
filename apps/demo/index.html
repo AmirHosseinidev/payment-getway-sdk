@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant Demo - Payment SDK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+
+    <main class="w-full max-w-md bg-white rounded-2xl shadow-lg p-6">
+        <h1 class="text-2xl font-bold text-center mb-2">فروشگاه آزمایشی</h1>
+        <p class="text-center text-slate-500 mb-8">اتصال به درگاه پرداخت با SDK</p>
+
+        <label class="block mb-2">مبلغ (تومان)</label>
+        <input id="amount" type="number" value="500000" min="1" class="w-full border rounded-xl p-3 mb-4">
+
+        <label class="block mb-2">شماره سفارش</label>
+        <input id="orderId" type="text" value="ORDER-1003" class="w-full border rounded-xl p-3 mb-6">
+
+        <button id="payBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl">
+            پرداخت
+        </button>
+
+        <p id="message" class="text-center text-sm mt-4"></p>
+    </main>
+
+    <script type="module">
+        import { PaymentGateway } from '../../packages/payment-sdk/dist/index.js';
+
+        const sdk = new PaymentGateway({
+            apiUrl: 'http://localhost:3000',
+            apiKey: 'test_merchant_key_123456'
+        });
+
+        const payBtn = document.querySelector('#payBtn');
+        const message = document.querySelector('#message');
+
+        payBtn.addEventListener('click', async () => {
+            payBtn.disabled = true;
+            message.textContent = 'در حال ایجاد پرداخت...';
+
+            try {
+                const payment = await sdk.createPayment({
+                    amount: Number(document.querySelector('#amount').value),
+                    orderId: document.querySelector('#orderId').value,
+                    callbackUrl: 'https://example.com/callback'
+                });
+
+                window.location.href = payment.paymentUrl;
+
+            } catch (error) {
+                message.textContent = error.message;
+                message.className = 'text-center text-sm mt-4 text-red-600';
+                payBtn.disabled = false;
+            }
+        });
+    </script>
+
+</body>
+
+</html>
